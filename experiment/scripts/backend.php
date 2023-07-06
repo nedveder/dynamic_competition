@@ -20,15 +20,17 @@ $is_biased_choice = $is_biased_side ? 'True' : 'False';
 // Allocate rewards to next trial
 /////////////////////////////////////////////////////////////////////////////////
 $result_string = "";
-    /////////////////////////////////////////////////////////////////////////////
-    // DYNAMIC Allocation of rewards to next trial
-    /////////////////////////////////////////////////////////////////////////////
-$current_biased_reward = $current_unbiased_reward = NULL;
+/////////////////////////////////////////////////////////////////////////////
+// DYNAMIC Allocation of rewards to next trial
+/////////////////////////////////////////////////////////////////////////////
+$current_biased_reward = $current_unbiased_reward = null;
+
 // The name of the dynamic schedule should be set in the session parameter, e.g.:
-//       $_SESSION['schedule_name'] = "my_dynamic_model";
+$_SESSION['schedule_name'] = "nadav_lederman";
+$_SESSION['schedule_type'] = "DYNAMIC";
 // The name should refer to a python file that exists in sequences/dynamic folder
 // A good place for this definition is at main.php
-if($_SESSION['schedule_type'] == "DYNAMIC"){ //Game is dynamic
+if ($_SESSION['schedule_type'] == "DYNAMIC") { //Game is dynamic
     $run_python_command = 'python ../sequences/dynamic/'. $_SESSION['schedule_name'] . '.py '
         . json_encode($_SESSION['bias_rewards']) . ' '
         . json_encode($_SESSION['unbias_rewards']) . ' '
@@ -39,25 +41,25 @@ if($_SESSION['schedule_type'] == "DYNAMIC"){ //Game is dynamic
     $current_biased_reward = $result_array[0];
     $current_unbiased_reward = $result_array[1];
 }
-    /////////////////////////////////////////////////////////////////////////////
-    // STATIC - Allocation of rewards to next trial
-    /////////////////////////////////////////////////////////////////////////////
-else{ // Game is static
-    include '../sequences/static/' . $_SESSION['schedule_name'] . '.php';
-    $current_biased_reward = $biased_rewards[$_SESSION['trial_number']];
-    $current_unbiased_reward = $unbiased_rewards[$_SESSION['trial_number']];
-}
-if ($is_biased_side){ // If current choice was of the biased side
+/////////////////////////////////////////////////////////////////////////////
+// STATIC - Allocation of rewards to next trial
+/////////////////////////////////////////////////////////////////////////////
+// else { // Game is static
+//     include '../sequences/static/' . $_SESSION['schedule_name'] . '.php';
+//     $current_biased_reward = $biased_rewards[$_SESSION['trial_number']];
+//     $current_unbiased_reward = $unbiased_rewards[$_SESSION['trial_number']];
+// }
+if ($is_biased_side) { // If current choice was of the biased side
     $current_reward = $current_biased_reward;
     $current_unobserved_reward = $current_unbiased_reward;
 }
-else{
+else {
     $current_reward = $current_unbiased_reward;
     $current_unobserved_reward = $current_biased_reward;
 }
-array_push($_SESSION['bias_rewards'],$current_biased_reward);
-array_push($_SESSION['unbias_rewards'],$current_unbiased_reward);
-array_push($_SESSION['is_bias_choice'],$is_biased_choice);
+array_push($_SESSION['bias_rewards'], $current_biased_reward);
+array_push($_SESSION['unbias_rewards'], $current_unbiased_reward);
+array_push($_SESSION['is_bias_choice'], $is_biased_choice);
 
 /////////////////////////////////////////////////////////////////////////////////
 // Write current trial's data
